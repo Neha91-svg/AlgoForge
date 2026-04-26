@@ -1,10 +1,24 @@
-import { ArrowRight, Code2, Cpu, Globe, Zap } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { ArrowRight, Code2, Cpu, Globe, Zap, Play, ChevronDown, Terminal } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
+  const [code, setCode] = useState("");
+  const [language, setLanguage] = useState("javascript");
+  const [isVisualizing, setIsVisualizing] = useState(false);
+
+  const handleVisualize = () => {
+    setIsVisualizing(true);
+    // Simulation for now
+    setTimeout(() => setIsVisualizing(false), 2000);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center">
-      {/* Navbar Placeholder */}
+    <div className="flex flex-col items-center justify-center pb-20">
+      {/* Navbar */}
       <nav className="fixed top-0 z-50 w-full border-b border-white/5 bg-background/50 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
@@ -19,63 +33,107 @@ export default function Home() {
             <Link href="#" className="transition-colors hover:text-primary">Docs</Link>
           </div>
           <button className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-95">
-            Get Started
+            Sign In
           </button>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative flex min-h-screen w-full flex-col items-center justify-center px-6 pt-20">
-        <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 flex flex-col items-center text-center">
-          <div className="mb-6 flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
-            <Zap size={14} className="fill-current" />
-            <span>Next-gen Algorithm Visualization</span>
-          </div>
-          
-          <h1 className="max-w-4xl font-outfit text-5xl font-bold leading-[1.1] tracking-tight md:text-7xl lg:text-8xl">
-            Visualize code like <br />
-            <span className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">never before.</span>
+      <section className="relative flex w-full flex-col items-center justify-center px-6 pt-32 pb-16 text-center">
+        <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <h1 className="max-w-4xl font-outfit text-5xl font-bold leading-[1.1] tracking-tight md:text-6xl lg:text-7xl">
+            Forge your <span className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">algorithms.</span>
           </h1>
-          
-          <p className="mt-8 max-w-2xl text-lg text-muted-foreground md:text-xl">
-            A minimalist, high-performance platform for mastering complex data structures and algorithms through interactive, real-time visualizations.
+          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+            Paste your code, select your language, and watch your logic come to life in a real-time visualization environment.
           </p>
+        </div>
+      </section>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <button className="flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95">
-              Start Visualizing <ArrowRight size={20} />
-            </button>
-            <button className="flex items-center gap-2 rounded-full border border-border bg-background/50 px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all hover:bg-accent active:scale-95">
-              View on GitHub <Code2 size={20} />
-            </button>
+      {/* Editor Section */}
+      <section className="w-full max-w-5xl px-6 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] shadow-2xl backdrop-blur-sm">
+          {/* Editor Header */}
+          <div className="flex items-center justify-between border-b border-white/5 bg-white/[0.03] px-6 py-4">
+            <div className="flex items-center gap-4">
+              <div className="flex gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-red-500/50" />
+                <div className="h-3 w-3 rounded-full bg-yellow-500/50" />
+                <div className="h-3 w-3 rounded-full bg-green-500/50" />
+              </div>
+              <div className="h-4 w-px bg-white/10 mx-2" />
+              <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <Terminal size={14} />
+                <span>main.algo</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="relative group">
+                <select 
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  className="appearance-none bg-white/5 border border-white/10 rounded-lg px-4 py-1.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all cursor-pointer hover:bg-white/10"
+                >
+                  <option value="javascript">JavaScript</option>
+                  <option value="cpp">C++</option>
+                  <option value="c">C Language</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground" />
+              </div>
+            </div>
+          </div>
+
+          {/* Editor Body */}
+          <div className="relative group">
+            <textarea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="// Write your code here...
+function bubbleSort(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    // Visualization logic will appear here
+  }
+}"
+              className="w-full min-h-[400px] bg-transparent p-8 font-mono text-sm leading-relaxed text-zinc-300 placeholder:text-zinc-600 focus:outline-none resize-none"
+              spellCheck={false}
+            />
+            
+            {/* Visualizer Button Overlay */}
+            <div className="absolute bottom-8 right-8">
+              <button 
+                onClick={handleVisualize}
+                disabled={isVisualizing || !code.trim()}
+                className={cn(
+                  "flex items-center gap-3 rounded-2xl bg-primary px-8 py-4 text-lg font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none",
+                  isVisualizing ? "animate-pulse" : "hover:scale-105"
+                )}
+              >
+                {isVisualizing ? (
+                  <>Initializing... <Zap size={20} className="animate-spin" /></>
+                ) : (
+                  <>Visualize <Play size={20} fill="currentColor" /></>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Feature Grid Preview */}
-        <div className="mt-32 grid w-full max-w-7xl grid-cols-1 gap-6 px-6 md:grid-cols-3">
+        {/* Info Cards */}
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           {[
-            {
-              title: "Interactive Trees",
-              desc: "Step through binary search trees and AVL trees with ease.",
-              icon: <Cpu className="text-primary" />
-            },
-            {
-              title: "Pathfinding",
-              desc: "Visualize Dijkstra, A*, and BFS in real-time environments.",
-              icon: <Globe className="text-primary" />
-            },
-            {
-              title: "Sorting",
-              desc: "Compare sorting algorithms with beautiful animations.",
-              icon: <Zap className="text-primary" />
-            }
-          ].map((feature, i) => (
-            <div key={i} className="group rounded-3xl border border-white/5 bg-white/[0.02] p-8 transition-all hover:border-primary/20 hover:bg-white/[0.04]">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 transition-transform group-hover:scale-110">
-                {feature.icon}
+            { label: "Memory Usage", value: "0.4 MB", icon: <Cpu size={16} /> },
+            { label: "Step Count", value: "0 Steps", icon: <ArrowRight size={16} /> },
+            { label: "Time Complexity", value: "O(n²)", icon: <Zap size={16} /> }
+          ].map((stat, i) => (
+            <div key={i} className="flex items-center gap-4 rounded-2xl border border-white/5 bg-white/[0.02] p-4 backdrop-blur-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                {stat.icon}
               </div>
-              <h3 className="font-outfit text-xl font-bold">{feature.title}</h3>
-              <p className="mt-2 text-muted-foreground">{feature.desc}</p>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{stat.label}</p>
+                <p className="text-lg font-bold">{stat.value}</p>
+              </div>
             </div>
           ))}
         </div>
