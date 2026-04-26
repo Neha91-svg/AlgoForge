@@ -11,7 +11,7 @@ export default function Home() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <Cpu size={20} />
             </div>
-            <span className="font-outfit text-xl font-bold tracking-tight">DSA<span className="text-muted-foreground">Visualizer</span></span>
+            <span className="font-outfit text-xl font-bold tracking-tight">Algo<span className="text-muted-foreground">Forge</span></span>
           </div>
           <div className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
             <Link href="#" className="transition-colors hover:text-primary">Algorithms</Link>
@@ -83,7 +83,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="mt-20 w-full border-t border-white/5 py-12 text-center text-sm text-muted-foreground">
-        <p>© 2026 DSA Visualizer. Built with Next.js & Tailwind CSS.</p>
+        <p>© 2026 AlgoForge. Built with Next.js & Tailwind CSS.</p>
       </footer>
     </div>
   );

@@ -20,10 +20,10 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "DSA Visualizer | Master Algorithms Visually",
+  title: "AlgoForge | Master Algorithms Visually",
   description: "A premium platform to visualize and master Data Structures and Algorithms with interactive tools and smooth animations.",
-  keywords: ["DSA", "Algorithm Visualizer", "Data Structures", "Programming", "Computer Science"],
-  authors: [{ name: "DSA Visualizer Team" }],
+  keywords: ["DSA", "AlgoForge", "Algorithm Visualizer", "Data Structures", "Programming", "Computer Science"],
+  authors: [{ name: "AlgoForge Team" }],
 };
 
 export default function RootLayout({
