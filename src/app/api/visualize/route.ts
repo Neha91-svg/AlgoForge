@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { generateCodeExplanation } from "@/lib/gemini";
 
 export async function POST(req: Request) {
   try {
@@ -24,10 +25,14 @@ export async function POST(req: Request) {
       status: "active"
     }));
 
+    // Generate AI explanation
+    const explanation = await generateCodeExplanation(code, language);
+
     return NextResponse.json({
       success: true,
       data: {
         steps,
+        explanation,
         metadata: {
           language,
           timeComplexity: "O(N)",

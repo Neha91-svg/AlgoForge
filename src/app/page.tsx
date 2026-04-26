@@ -11,6 +11,7 @@ export default function Home() {
   const [language, setLanguage] = useState("javascript");
   const [isVisualizing, setIsVisualizing] = useState(false);
   const [showVisualizer, setShowVisualizer] = useState(false);
+  const [explanation, setExplanation] = useState("");
 
   const handleVisualize = async () => {
     if (!code.trim()) return;
@@ -28,8 +29,7 @@ export default function Home() {
       const result = await response.json();
       
       if (result.success) {
-        // We could pass result.data.steps to the visualizer if needed
-        // For now, the visualizer handles the animation of mock data
+        setExplanation(result.data.explanation);
         console.log("Visualizing data:", result.data);
       } else {
         console.error("API Error:", result.error);
@@ -150,24 +150,42 @@ function bubbleSort(arr) {
 
         {/* Visualizer Area */}
         {showVisualizer && (
-          <div className="mt-12 animate-in fade-in zoom-in duration-500">
-            <div className="mb-6 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <LayoutDashboard size={20} className="text-primary" />
-                <h2 className="font-outfit text-xl font-bold">Visualization Output</h2>
+          <div className="mt-12 animate-in fade-in zoom-in duration-500 space-y-8">
+            {/* AI Explanation */}
+            {explanation && (
+              <div className="rounded-3xl border border-primary/20 bg-primary/5 p-8 backdrop-blur-sm">
+                <div className="flex items-center gap-2 mb-4">
+                  <Zap size={18} className="text-primary fill-current" />
+                  <h3 className="font-outfit text-lg font-bold text-primary uppercase tracking-wider">AI Reasoning & Logic</h3>
+                </div>
+                <div className="prose prose-invert max-w-none text-muted-foreground leading-relaxed whitespace-pre-wrap font-sans text-sm md:text-base">
+                  {explanation}
+                </div>
               </div>
-              <button 
-                onClick={() => setShowVisualizer(false)}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Close Output
-              </button>
+            )}
+
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <LayoutDashboard size={20} className="text-primary" />
+                  <h2 className="font-outfit text-xl font-bold">Visualization Output</h2>
+                </div>
+                <button 
+                  onClick={() => {
+                    setShowVisualizer(false);
+                    setExplanation("");
+                  }}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Clear Session
+                </button>
+              </div>
+              
+              <ArrayTraversal 
+                isAnimating={isVisualizing} 
+                onComplete={handleComplete} 
+              />
             </div>
-            
-            <ArrayTraversal 
-              isAnimating={isVisualizing} 
-              onComplete={handleComplete} 
-            />
           </div>
         )}
 
