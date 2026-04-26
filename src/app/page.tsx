@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { 
   ArrowRight, 
   Code2, 
@@ -29,7 +29,7 @@ export default function Home() {
   const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleVisualize = async () => {
+  const handleVisualize = useCallback(async () => {
     if (!code.trim() || code.length < 5) {
       setError("Please enter a valid piece of code (at least 5 characters).");
       return;
@@ -63,11 +63,11 @@ export default function Home() {
     } finally {
       setIsLoadingAI(false);
     }
-  };
+  }, [code, language]);
 
-  const handleComplete = () => {
+  const handleComplete = useCallback(() => {
     setIsVisualizing(false);
-  };
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen selection:bg-primary/20">

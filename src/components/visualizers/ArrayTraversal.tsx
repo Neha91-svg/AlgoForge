@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface ArrayTraversalProps {
@@ -11,19 +11,23 @@ interface ArrayTraversalProps {
   onComplete?: () => void;
 }
 
-export default function ArrayTraversal({ 
+const ArrayTraversal = memo(({ 
   data = [45, 23, 89, 12, 67, 34, 90, 56], 
   speed = 1000,
   targetValue = 67,
   isAnimating,
   onComplete 
-}: ArrayTraversalProps) {
+}: ArrayTraversalProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [decision, setDecision] = useState<{ active: boolean; result: boolean | null }>({ active: false, result: null });
   const [isFound, setIsFound] = useState(false);
+  
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    const cleanup = () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
 
     if (isAnimating) {
       let current = 0;
@@ -41,12 +45,12 @@ export default function ArrayTraversal({
         setDecision({ active: true, result: null });
 
         // Phase 1: Checking
-        timer = setTimeout(() => {
+        timerRef.current = setTimeout(() => {
           const isMatch = data[current] === targetValue;
           setDecision({ active: true, result: isMatch });
 
           // Phase 2: Decision Result
-          timer = setTimeout(() => {
+          timerRef.current = setTimeout(() => {
             if (isMatch) {
               setIsFound(true);
               setDecision({ active: true, result: true });
@@ -67,7 +71,7 @@ export default function ArrayTraversal({
       setIsFound(false);
     }
 
-    return () => clearTimeout(timer);
+    return cleanup;
   }, [isAnimating, data, targetValue, speed, onComplete]);
 
   return (
@@ -78,7 +82,7 @@ export default function ArrayTraversal({
           <div key={idx} className="flex flex-col items-center gap-3">
             <div 
               className={cn(
-                "w-12 rounded-t-xl transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) flex items-end justify-center pb-4 text-xs font-bold relative",
+                "w-12 rounded-t-xl transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) flex items-end justify-center pb-4 text-xs font-bold relative will-change-[height,transform,background-color]",
                 activeIndex === idx 
                   ? (decision.result === true ? "bg-green-500 h-[160px] shadow-[0_0_40px_rgba(34,197,94,0.4)] scale-110 z-10" : 
                      decision.result === false ? "bg-red-500 h-[160px] shadow-[0_0_40px_rgba(239,68,68,0.4)] scale-110 z-10" :
@@ -173,4 +177,6 @@ export default function ArrayTraversal({
       </div>
     </div>
   );
-}
+});
+
+export default ArrayTraversal;
