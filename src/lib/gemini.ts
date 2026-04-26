@@ -28,8 +28,8 @@ export async function generateCodeExplanation(code: string, language: string) {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();
-  } catch (error) {
-    console.error("Gemini AI Error:", error);
-    return "Failed to generate AI explanation.";
+  } catch (error: any) {
+    console.error("Gemini AI API Error:", error?.message || error);
+    return `AI Explanation is temporarily unavailable. (Reason: ${error?.message || "Unknown API Error"})`;
   }
 }

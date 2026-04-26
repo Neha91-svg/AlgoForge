@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { generateCodeExplanation } from "@/lib/gemini";
+import { generateGroqExplanation } from "@/lib/groq";
 
 export async function POST(req: Request) {
   try {
@@ -25,8 +26,18 @@ export async function POST(req: Request) {
       status: "active"
     }));
 
-    // Generate AI explanation
-    const explanation = await generateCodeExplanation(code, language);
+    // Generate AI explanation (Try Groq first, then fallback to Gemini)
+    let explanation = "";
+    try {
+      if (process.env.GROQ_API_KEY) {
+        explanation = await generateGroqExplanation(code, language);
+      } else {
+        explanation = await generateCodeExplanation(code, language);
+      }
+    } catch (error: any) {
+      console.error("AI Provider Error:", error);
+      explanation = await generateCodeExplanation(code, language);
+    }
 
     return NextResponse.json({
       success: true,
