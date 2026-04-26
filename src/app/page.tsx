@@ -12,10 +12,33 @@ export default function Home() {
   const [isVisualizing, setIsVisualizing] = useState(false);
   const [showVisualizer, setShowVisualizer] = useState(false);
 
-  const handleVisualize = () => {
+  const handleVisualize = async () => {
+    if (!code.trim()) return;
+    
     setIsVisualizing(true);
     setShowVisualizer(true);
-    // The visualizer handles its own completion state, but we can set a timer if needed
+
+    try {
+      const response = await fetch("/api/visualize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, language }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // We could pass result.data.steps to the visualizer if needed
+        // For now, the visualizer handles the animation of mock data
+        console.log("Visualizing data:", result.data);
+      } else {
+        console.error("API Error:", result.error);
+        setIsVisualizing(false);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      setIsVisualizing(false);
+    }
   };
 
   const handleComplete = () => {
