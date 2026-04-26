@@ -1,19 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Code2, Cpu, Globe, Zap, Play, ChevronDown, Terminal } from "lucide-react";
+import { ArrowRight, Code2, Cpu, Globe, Zap, Play, ChevronDown, Terminal, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import ArrayTraversal from "@/components/visualizers/ArrayTraversal";
 
 export default function Home() {
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState("javascript");
   const [isVisualizing, setIsVisualizing] = useState(false);
+  const [showVisualizer, setShowVisualizer] = useState(false);
 
   const handleVisualize = () => {
     setIsVisualizing(true);
-    // Simulation for now
-    setTimeout(() => setIsVisualizing(false), 2000);
+    setShowVisualizer(true);
+    // The visualizer handles its own completion state, but we can set a timer if needed
+  };
+
+  const handleComplete = () => {
+    setIsVisualizing(false);
   };
 
   return (
@@ -118,6 +124,29 @@ function bubbleSort(arr) {
             </div>
           </div>
         </div>
+
+        {/* Visualizer Area */}
+        {showVisualizer && (
+          <div className="mt-12 animate-in fade-in zoom-in duration-500">
+            <div className="mb-6 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <LayoutDashboard size={20} className="text-primary" />
+                <h2 className="font-outfit text-xl font-bold">Visualization Output</h2>
+              </div>
+              <button 
+                onClick={() => setShowVisualizer(false)}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Close Output
+              </button>
+            </div>
+            
+            <ArrayTraversal 
+              isAnimating={isVisualizing} 
+              onComplete={handleComplete} 
+            />
+          </div>
+        )}
 
         {/* Info Cards */}
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
