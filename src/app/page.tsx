@@ -148,43 +148,64 @@ function bubbleSort(arr) {
           </div>
         </div>
 
-        {/* Visualizer Area */}
+        {/* Visualizer Dashboard */}
         {showVisualizer && (
-          <div className="mt-12 animate-in fade-in zoom-in duration-500 space-y-8">
-            {/* AI Explanation */}
-            {explanation && (
-              <div className="rounded-3xl border border-primary/20 bg-primary/5 p-8 backdrop-blur-sm">
-                <div className="flex items-center gap-2 mb-4">
-                  <Zap size={18} className="text-primary fill-current" />
-                  <h3 className="font-outfit text-lg font-bold text-primary uppercase tracking-wider">AI Reasoning & Logic</h3>
+          <div className="mt-16 animate-in fade-in slide-in-from-top-8 duration-700 space-y-10">
+            <div className="flex items-center justify-between border-b border-white/5 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <LayoutDashboard size={24} />
                 </div>
-                <div className="prose prose-invert max-w-none text-muted-foreground leading-relaxed whitespace-pre-wrap font-sans text-sm md:text-base">
-                  {explanation}
+                <div>
+                  <h2 className="font-outfit text-2xl font-bold">Execution Dashboard</h2>
+                  <p className="text-sm text-muted-foreground">Real-time analysis and visualization of your logic.</p>
                 </div>
               </div>
-            )}
+              <button 
+                onClick={() => {
+                  setShowVisualizer(false);
+                  setExplanation("");
+                }}
+                className="rounded-full border border-white/10 bg-white/5 px-6 py-2 text-sm font-medium hover:bg-white/10 transition-all active:scale-95"
+              >
+                Reset Session
+              </button>
+            </div>
 
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <LayoutDashboard size={20} className="text-primary" />
-                  <h2 className="font-outfit text-xl font-bold">Visualization Output</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              {/* Left Column: AI Reasoning */}
+              <div className="lg:col-span-5 space-y-4">
+                <div className="flex items-center gap-2 px-1">
+                  <Zap size={16} className="text-primary fill-current" />
+                  <h3 className="font-outfit text-sm font-bold uppercase tracking-widest text-muted-foreground">AI Logic Synthesis</h3>
                 </div>
-                <button 
-                  onClick={() => {
-                    setShowVisualizer(false);
-                    setExplanation("");
-                  }}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Clear Session
-                </button>
+                {explanation ? (
+                  <div className="rounded-3xl border border-primary/20 bg-primary/5 p-8 backdrop-blur-sm shadow-inner min-h-[400px]">
+                    <div className="prose prose-invert max-w-none text-muted-foreground leading-relaxed whitespace-pre-wrap font-sans text-sm md:text-base selection:bg-primary/20">
+                      {explanation}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-3xl border border-white/5 bg-white/[0.02] p-8 h-[400px] flex flex-col items-center justify-center text-center">
+                    <div className="h-12 w-12 rounded-full border-2 border-white/10 border-t-primary animate-spin mb-4" />
+                    <p className="text-muted-foreground animate-pulse">AI is forging an explanation...</p>
+                  </div>
+                )}
               </div>
-              
-              <ArrayTraversal 
-                isAnimating={isVisualizing} 
-                onComplete={handleComplete} 
-              />
+
+              {/* Right Column: Visualization Output */}
+              <div className="lg:col-span-7 space-y-4">
+                <div className="flex items-center gap-2 px-1">
+                  <Globe size={16} className="text-primary" />
+                  <h3 className="font-outfit text-sm font-bold uppercase tracking-widest text-muted-foreground">Interactive Runtime</h3>
+                </div>
+                <div className="rounded-3xl border border-white/5 bg-white/[0.02] overflow-hidden">
+                  <ArrayTraversal 
+                    isAnimating={isVisualizing} 
+                    onComplete={handleComplete} 
+                  />
+                </div>
+              </div>
             </div>
           </div>
         )}
