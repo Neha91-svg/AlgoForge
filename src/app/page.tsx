@@ -27,10 +27,15 @@ export default function Home() {
   const [showVisualizer, setShowVisualizer] = useState(false);
   const [explanation, setExplanation] = useState("");
   const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleVisualize = async () => {
-    if (!code.trim()) return;
+    if (!code.trim() || code.length < 5) {
+      setError("Please enter a valid piece of code (at least 5 characters).");
+      return;
+    }
     
+    setError(null);
     setIsVisualizing(true);
     setShowVisualizer(true);
     setIsLoadingAI(true);
@@ -48,10 +53,13 @@ export default function Home() {
       if (result.success) {
         setExplanation(result.data.explanation);
       } else {
-        setExplanation(`Error: ${result.error}`);
+        setError(result.error || "An unexpected error occurred.");
+        setExplanation("");
+        setShowVisualizer(false);
       }
-    } catch (error) {
-      setExplanation("Failed to connect to the visualization engine.");
+    } catch (err) {
+      setError("Failed to connect to the visualization engine. Please check your network.");
+      setShowVisualizer(false);
     } finally {
       setIsLoadingAI(false);
     }
@@ -127,7 +135,18 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="relative">
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={() => {
+                      setCode("");
+                      setError(null);
+                      setShowVisualizer(false);
+                    }}
+                    className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-red-400 transition-colors"
+                  >
+                    Clear Editor
+                  </button>
+                  <div className="relative">
                   <select 
                     value={language}
                     onChange={(e) => setLanguage(e.target.value)}
@@ -139,21 +158,38 @@ export default function Home() {
                   </select>
                   <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/50" />
                 </div>
+                </div>
               </div>
 
               <div className="relative">
                 <textarea
                   value={code}
-                  onChange={(e) => setCode(e.target.value)}
+                  onChange={(e) => {
+                    setCode(e.target.value);
+                    if (error) setError(null);
+                  }}
                   placeholder="// Paste your algorithm here...
 function traverse(arr) {
   for(let i = 0; i < arr.length; i++) {
     console.log(arr[i]);
   }
 }"
-                  className="w-full min-h-[500px] bg-transparent p-10 font-mono text-base leading-relaxed text-zinc-200 placeholder:text-zinc-600 focus:outline-none resize-none selection:bg-primary/30"
+                  className={cn(
+                    "w-full min-h-[500px] bg-transparent p-10 font-mono text-base leading-relaxed text-zinc-200 placeholder:text-zinc-600 focus:outline-none resize-none selection:bg-primary/30 transition-all",
+                    error ? "bg-red-500/5" : ""
+                  )}
                   spellCheck={false}
                 />
+                
+                {/* Error Banner */}
+                {error && (
+                  <div className="absolute top-0 left-0 right-0 bg-red-500/10 border-b border-red-500/20 px-10 py-3 animate-in slide-in-from-top-2 duration-300">
+                    <p className="text-xs font-bold text-red-400 flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                      {error}
+                    </p>
+                  </div>
+                )}
                 
                 {/* Float Action Button */}
                 <div className="absolute bottom-8 right-8">

@@ -7,9 +7,17 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { code, language } = body;
 
-    if (!code) {
+    if (!code || code.trim().length < 5) {
       return NextResponse.json(
-        { success: false, error: "Code is required" },
+        { success: false, error: "Code is too short or empty. Please provide a valid algorithm." },
+        { status: 400 }
+      );
+    }
+
+    const supportedLanguages = ["javascript", "cpp", "c"];
+    if (!supportedLanguages.includes(language)) {
+      return NextResponse.json(
+        { success: false, error: `Language '${language}' is not currently supported.` },
         { status: 400 }
       );
     }
