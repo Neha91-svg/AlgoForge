@@ -50,10 +50,10 @@ export default function CareerPage() {
       if (result.success) {
         setSuggestions(result.data);
       } else {
-        setError(result.error || "Failed to get suggestions.");
+        setError(result.error || "The Career Forge is currently cooling down. Please try again in a moment.");
       }
     } catch (err) {
-      setError("Connection error. Please try again.");
+      setError("Network frequency error. Ensure you are connected to the grid.");
     } finally {
       setIsLoading(false);
     }
@@ -114,18 +114,33 @@ export default function CareerPage() {
             <button 
               onClick={handleGetSuggestions}
               disabled={isLoading}
-              className="w-full md:w-auto flex items-center justify-center gap-3 rounded-2xl bg-primary px-10 py-4 font-black text-primary-foreground shadow-xl transition-all active:scale-95 disabled:opacity-50"
+              className="w-full md:w-auto flex items-center justify-center gap-3 rounded-2xl bg-primary px-10 py-4 font-black text-primary-foreground shadow-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group"
             >
-              {isLoading ? <Loader2 className="animate-spin" /> : "EXPLORE"}
+              {isLoading ? (
+                <>FORGING <Loader2 className="animate-spin" /></>
+              ) : (
+                <>EXPLORE <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
+              )}
             </button>
           </div>
           {error && (
-            <p className="mt-4 text-center text-sm font-bold text-red-400 animate-in fade-in slide-in-from-top-2">{error}</p>
+            <div className="mt-6 flex items-center justify-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold uppercase tracking-widest animate-in slide-in-from-top-2">
+              <div className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+              {error}
+            </div>
           )}
         </div>
 
         {/* Results Section */}
-        {suggestions.length > 0 && (
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-pulse">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-[500px] rounded-[2.5rem] bg-white/5 border border-white/10" />
+            ))}
+          </div>
+        )}
+
+        {!isLoading && suggestions.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-12 duration-1000">
             {suggestions.map((career, idx) => (
               <div key={idx} className="group flex flex-col h-full rounded-[2.5rem] border border-white/10 bg-white/[0.02] p-8 transition-all hover:bg-white/[0.04] hover:border-primary/30">
